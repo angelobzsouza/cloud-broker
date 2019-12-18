@@ -1,0 +1,7 @@
+Iniciar o serviço no heroku
+
+Iniciar o cloud broker
+
+Iniciar os providers
+
+Iniciar o cliente

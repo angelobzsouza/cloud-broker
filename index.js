@@ -8,6 +8,18 @@ app.use(bodyParser.json());
 const CloudBroker = require('./server/cloudBroker');
 const cloudBroker = new CloudBroker();
 
+app.get('/', async (req, res) => {
+  try {
+    await cloudBroker.start();
+    res.send('O Cloud Broker foi iniciado!');
+  } catch (e) {
+    res.status(500).send({
+      error: true,
+      message: e.message
+    });
+  }
+});
+
 app.get('/resource', async (req, res) => {
   try {
     const { cpu, ram, hd } = req.query;
@@ -35,12 +47,7 @@ app.get('/providers', async (req, res) => {
 
 app.post('/provider', async (req, res) => {
   try {
-    const providerIP = (req.headers['x-forwarded-for'] || '').split(',').pop()
-     || req.connection.remoteAddress
-     || req.socket.remoteAddress
-     || req.connection.socket.remoteAddress;
-
-    await cloudBroker.updateProvider(providerIP, req.body);
+    await cloudBroker.updateProvider(req.body);
     res.sendStatus(200);
   } catch (e) {
     res.status(500).send({

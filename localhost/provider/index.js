@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 const Provider = require('./provider');
 const provider = new Provider(process.argv[2]);
 
-app.get('/resource/use', async (req, res) => {
+app.post('/resource/use', async (req, res) => {
   try {
     const { chave } = req.body;
     const response = await provider.useVm(chave);
@@ -18,18 +18,19 @@ app.get('/resource/use', async (req, res) => {
         error: true,
         message: response.message
       });
+      return;
     }
 
-    res.send(200);
+    res.sendStatus(200);
   } catch (e) {
     res.status(500).send({
       error: true,
-      message: e.getMessage()
+      message: e.message
     });
   }
 });
 
-app.get('/resource/release', async (req, res) => {
+app.post('/resource/release', async (req, res) => {
   try {
     const {
       chave
@@ -41,13 +42,14 @@ app.get('/resource/release', async (req, res) => {
         error: true,
         message: response.message
       });
+      return;
     }
 
-    res.send(200);
+    res.sendStatus(200);
   } catch (e) {
     res.status(500).send({
       error: true,
-      message: e.getMessage()
+      message: e.message
     });
   }
 });

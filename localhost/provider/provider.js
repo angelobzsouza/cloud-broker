@@ -29,19 +29,17 @@ class Provider {
       dados: this.vms
     }
 
-    console.log('Sending request to Cloud Broker');
-    console.log('REQ BODY:', JSON.stringify(providerJson));
-    const response = await fetch(process.env.CLOUDBROKER_URI, {
+    const response = await fetch(`${process.env.CLOUDBROKER_URI}/provider`, {
       method: 'POST',
-      body: providerJson
+      body: JSON.stringify(providerJson),
+      headers: { 'Content-Type': 'application/json' }
     });
-    console.log('REQ RESPONSE: ', JSON.stringify(response));
 
     return response;
   }
 
   async useVm (chave) {
-    if (chave > this.vms.length) {
+    if (chave > this.vms.length - 1) {
       return {
         error: true,
         statusCode: 404,
@@ -52,7 +50,7 @@ class Provider {
     if (this.vms[chave].uso) {
       return {
         error: true,
-        statusCode: 40,
+        statusCode: 400,
         message: 'Vitural machine is in use'
       }
     }
@@ -65,7 +63,7 @@ class Provider {
   }
 
   async releaseVm (chave) {
-    if (chave > this.vms.length) {
+    if (chave > this.vms.length - 1) {
       return {
         error: true,
         statusCode: 404,
@@ -76,7 +74,7 @@ class Provider {
     if (!this.vms[chave].uso) {
       return {
         error: true,
-        statusCode: 40,
+        statusCode: 400,
         message: 'Vitural machine is not in use'
       }
     }

@@ -4,6 +4,13 @@ const {  createMongoConnection } = require('./utils');
 class CloudBroker {
 
   constructor() {
+
+  }
+
+  async start () {
+    const [mongodb, mongoClient] = await createMongoConnection();
+    const collection = mongodb.collection('providers');
+    await collection.deleteMany({});
   }
   
   async getBestResource (cpu, ram, hd) {
@@ -39,7 +46,7 @@ class CloudBroker {
       },
       {
         "$project": {
-          "ip": "$ip",
+          "porta": "$porta",
           "preco": "$vms.preco",
           "chave": "$vms.chave"
         }
@@ -51,7 +58,7 @@ class CloudBroker {
       },
       {
         "$group": {
-          "_id": "$ip",
+          "_id": "$porta",
           "menor_preco": {
             "$last": "$preco"
           },
@@ -75,8 +82,8 @@ class CloudBroker {
 
     mongoClient.close();
     return bestVm
-      ? { ip: bestVm._id, chave: bestVm.chave } 
-      : { ip: "0.0.0.0", chave: -1 };
+      ? { porta: bestVm._id, chave: bestVm.chave } 
+      : { porta: "0000", chave: -1 };
   }
 
   async getProviders () {
@@ -87,13 +94,13 @@ class CloudBroker {
     return providers;  
   }
 
-  async updateProvider (providerIP, provider) {
+  async updateProvider (provider) {
     const [mongodb, mongoClient] = await createMongoConnection();
     const collection = mongodb.collection('providers');
 
     await collection.updateOne(
       {
-        ip: providerIP+':'+provider.porta,
+        porta: provider.porta,
       },
       {
         $set: {
