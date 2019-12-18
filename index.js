@@ -9,7 +9,6 @@ const CloudBroker = require('./server/cloudBroker');
 
 app.get('/resource', async (req, res) => {
   try {
-    res.send("Chubacca");
     const { cpu, ram, hd } = req.query;
     const cloudBroker = new CloudBroker();
     const bestProvider = await cloudBroker.getBestResource(cpu, ram, hd);
