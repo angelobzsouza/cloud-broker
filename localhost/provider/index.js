@@ -21,7 +21,7 @@ app.post('/resource/use', async (req, res) => {
       return;
     }
 
-    res.sendStatus(200);
+    res.send({ error: false });
   } catch (e) {
     res.status(500).send({
       error: true,
@@ -45,7 +45,7 @@ app.post('/resource/release', async (req, res) => {
       return;
     }
 
-    res.sendStatus(200);
+    res.send({ error: false });
   } catch (e) {
     res.status(500).send({
       error: true,

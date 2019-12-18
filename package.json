@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon index.js",
-    "start:provider": "node localhost/provider/index.js"
+    "start:provider": "node localhost/provider/index.js",
+    "start:client": "node localhost/client/client.js"
   },
   "author": "Angelo Souza & Giuliano Crespe",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "utils": "^0.3.1"
   }
 }

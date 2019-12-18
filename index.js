@@ -58,5 +58,5 @@ app.post('/provider', async (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running at localhost: ${process.env.PORT}`)
+  console.log(`CloudBroker is running at localhost: ${process.env.PORT}`)
 });
