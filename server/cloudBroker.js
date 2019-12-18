@@ -73,6 +73,7 @@ class CloudBroker {
       }
     }
 
+    mongoClient.close();
     return bestVm
       ? { ip: bestVm._id, chave: bestVm.chave } 
       : { ip: "0.0.0.0", chave: -1 };
@@ -90,20 +91,21 @@ class CloudBroker {
     const [mongodb, mongoClient] = await createMongoConnection();
     const collection = mongodb.collection('providers');
 
-    // await collection.updateOne(
-    //   {
-    //     ip: providerIP+':'+provider.porta,
-    //   },
-    //   {
-    //     $set: {
-    //       vms: provider.dados
-    //     }
-    //   },
-    //   {
-    //     upsert: true,
-    //   }
-    // );
+    await collection.updateOne(
+      {
+        ip: providerIP+':'+provider.porta,
+      },
+      {
+        $set: {
+          vms: provider.dados
+        }
+      },
+      {
+        upsert: true,
+      }
+    );
 
+    mongoClient.close();
   }
 }
 

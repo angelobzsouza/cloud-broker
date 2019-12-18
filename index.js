@@ -41,10 +41,9 @@ app.post('/provider', async (req, res) => {
      || req.socket.remoteAddress
      || req.connection.socket.remoteAddress;
 
-    res.send(providerIP);
-
     const cloudBroker = new CloudBroker();
     await cloudBroker.updateProvider(providerIP, req.body);
+    res.sendStatus(200);
   } catch (e) {
     res.status(500).send({
       error: true,
