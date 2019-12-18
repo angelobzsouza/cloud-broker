@@ -6,11 +6,11 @@ const app = express();
 app.use(bodyParser.json());
 
 const CloudBroker = require('./server/cloudBroker');
+const cloudBroker = new CloudBroker();
 
 app.get('/resource', async (req, res) => {
   try {
     const { cpu, ram, hd } = req.query;
-    const cloudBroker = new CloudBroker();
     const bestProvider = await cloudBroker.getBestResource(cpu, ram, hd);
     res.send(bestProvider);
   } catch (e) {
@@ -23,7 +23,6 @@ app.get('/resource', async (req, res) => {
 
 app.get('/providers', async (req, res) => {
   try {
-    const cloudBroker = new CloudBroker();
     const providers = await cloudBroker.getProviders();
     res.send(providers);
   } catch (e) {
@@ -41,7 +40,6 @@ app.post('/provider', async (req, res) => {
      || req.socket.remoteAddress
      || req.connection.socket.remoteAddress;
 
-    const cloudBroker = new CloudBroker();
     await cloudBroker.updateProvider(providerIP, req.body);
     res.sendStatus(200);
   } catch (e) {
