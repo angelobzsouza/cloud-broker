@@ -3,10 +3,11 @@ const { MongoClient } = require('mongodb');
 exports.createMongoConnection = async () => {
   const uri = `${process.env.MONGODB_URI || 'mongodb://localhost/cloud-broker-ufscar'})`;
   const mongoConnection = new MongoClient(uri, { 
-    useUnifiedTopology: true 
+    useUnifiedTopology: true ,
+    useNewUrlParser: true
   });
-  console.log(mongoConnection);
   const mongodb = (await mongoConnection.connect()).db();
+  console.log(mongodb);
 
   return [mongodb, mongoConnection]
 };
