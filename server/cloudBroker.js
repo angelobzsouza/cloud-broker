@@ -71,6 +71,8 @@ class CloudBroker {
     // Get best vm for each provider
     const vms = await collection.aggregate([unwind, match, project, sort, group, ]).toArray();
 
+    console.log(vms);
+
     // Get best vm of all providers
     let bestVm = vms.length > 0 ? vms[0] : false;
     for (let i = 0; i < vms.length; i++) {
