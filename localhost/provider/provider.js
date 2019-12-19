@@ -3,30 +3,30 @@ const { getRandomInt } = require('../utils');
 
 class Provider {
 
-  constructor (porta) {
-    this.porta = porta;
+  constructor (port) {
+    this.port = port;
     this.vms = [];
     // Create provider vms
     const qtdVms = getRandomInt(1, 10);
     for (let i = 0; i < qtdVms; i++) {
       const vm = {
-        chave: i.toString(),
+        key: i.toString(),
         cpu: getRandomInt(1, 64),
         ram: getRandomInt(8, 4096),
         hd: getRandomInt(16, 60000),
-        preco: getRandomInt(1, 10000),
-        uso: 0,
+        price: getRandomInt(1, 10000),
+        use: 0,
       }
       this.vms.push(vm);
     }
     
-    this.divulga();
+    this.publish();
   }
 
-  async divulga () {
+  async publish () {
     const providerJson = {
-      porta: this.porta,
-      dados: this.vms
+      port: this.port,
+      data: this.vms
     }
 
     const response = await fetch(`${process.env.CLOUDBROKER_URI}/provider`, {
@@ -39,7 +39,7 @@ class Provider {
   }
 
   async useVm (chave) {
-    if (chave > this.vms.length - 1) {
+    if (key > this.vms.length - 1) {
       return {
         error: true,
         statusCode: 404,
@@ -47,7 +47,7 @@ class Provider {
       }
     }
 
-    if (this.vms[chave].uso) {
+    if (this.vms[chave].use) {
       return {
         error: true,
         statusCode: 400,
@@ -55,15 +55,15 @@ class Provider {
       }
     }
 
-    this.vms[chave].uso = 1;
-    await this.divulga();
+    this.vms[chave].use = 1;
+    await this.publish();
     return {
       error: false
     };
   }
 
   async releaseVm (chave) {
-    if (chave > this.vms.length - 1) {
+    if (key > this.vms.length - 1) {
       return {
         error: true,
         statusCode: 404,
@@ -71,7 +71,7 @@ class Provider {
       }
     }
 
-    if (!this.vms[chave].uso) {
+    if (!this.vms[chave].use) {
       return {
         error: true,
         statusCode: 400,
@@ -79,8 +79,8 @@ class Provider {
       }
     }
 
-    this.vms[chave].uso = 0;
-    await this.divulga();
+    this.vms[chave].use = 0;
+    await this.publish();
     return {
       error: false
     };

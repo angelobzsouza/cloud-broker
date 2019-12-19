@@ -24,7 +24,7 @@ class CloudBroker {
       "$match": {
         "$nor": [
           {
-            "vms.uso": 1
+            "vms.use": 1
           },
           {
             "vms.cpu": {
@@ -46,24 +46,24 @@ class CloudBroker {
     };
     const project = {
       "$project": {
-        "porta": "$porta",
-        "preco": "$vms.preco",
-        "chave": "$vms.chave"
+        "key": "$key",
+        "price": "$vms.price",
+        "key": "$vms.key"
       }
     };
     const sort = {
       "$sort": {
-        "preco": -1
+        "price": -1
       }
     };
     const group = {
       "$group": {
-        "_id": "$porta",
-        "menor_preco": {
-          "$last": "$preco"
+        "_id": "$port",
+        "lowestPrice": {
+          "$last": "$price"
         },
-        "chave": {
-          "$last": "$chave"
+        "key": {
+          "$last": "$key"
         }
       }
     };
@@ -74,15 +74,15 @@ class CloudBroker {
     // Get best vm of all providers
     let bestVm = vms.length > 0 ? vms[0] : false;
     for (let i = 0; i < vms.length; i++) {
-      if (bestVm.menor_preco > vms[i].menor_preco) {
+      if (bestVm.lowestPrice > vms[i].lowestPrice) {
         bestVm = vms[i];
       }
     }
 
     mongoClient.close();
     return bestVm
-      ? { porta: bestVm._id, chave: bestVm.chave } 
-      : { porta: "0000", chave: -1 };
+      ? { port: bestVm._id, key: bestVm.key } 
+      : { port: "0000", key: -1 };
   }
 
   async getProviders () {
@@ -99,11 +99,11 @@ class CloudBroker {
 
     await collection.updateOne(
       {
-        porta: provider.porta,
+        port: provider.port,
       },
       {
         $set: {
-          vms: provider.dados
+          vms: provider.data
         }
       },
       {

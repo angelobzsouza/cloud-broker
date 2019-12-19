@@ -11,7 +11,7 @@ const cloudBroker = new CloudBroker();
 app.get('/', async (req, res) => {
   try {
     await cloudBroker.start();
-    res.send('O Cloud Broker foi iniciado!');
+    res.send('The Cloud Broker was started correctly!');
   } catch (e) {
     res.status(500).send({
       error: true,

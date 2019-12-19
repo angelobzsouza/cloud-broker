@@ -10,8 +10,8 @@ const provider = new Provider(process.argv[2]);
 
 app.post('/resource/use', async (req, res) => {
   try {
-    const { chave } = req.body;
-    const response = await provider.useVm(chave);
+    const { key } = req.body;
+    const response = await provider.useVm(key);
     
     if (response.error) {
       res.status(response.statusCode).send({
@@ -32,10 +32,8 @@ app.post('/resource/use', async (req, res) => {
 
 app.post('/resource/release', async (req, res) => {
   try {
-    const {
-      chave
-    } = req.body;
-    const response = await provider.releaseVm(chave);
+    const { key } = req.body;
+    const response = await provider.releaseVm(key);
 
     if (response.error) {
       res.status(response.statusCode).send({

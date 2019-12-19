@@ -2,14 +2,14 @@ require('dotenv').config();
 const readline = require('readline');
 const fetch = require('node-fetch');
 const { inspect } = require('util');
-var rl = readline.createInterface({
+const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
 function getInput(question) {
   return new Promise(function (resolve, reject) {
-    var ask = function () {
+    const ask = function () {
       rl.question(question, function (answer) {
         res = parseInt(answer);
         resolve(res, reject);
@@ -39,24 +39,24 @@ async function getBestVm (cpu, ram, hd) {
   return response;
 }
 
-async function requestVm (porta, chave) {
-  chave = parseInt(chave, 10);
+async function requestVm (port, key) {
+  key = parseInt(key, 10);
 
-  const response = await fetch(`http://localhost:${porta}/resource/use`, {
+  const response = await fetch(`http://localhost:${port}/resource/use`, {
     method: 'POST',
-    body: JSON.stringify({ chave }),
+    body: JSON.stringify({ key }),
     headers: { 'Content-Type': 'application/json' }
   });
 
   return response;
 }
 
-async function releaseVm (porta, chave) {
-  chave = parseInt(chave, 10);
+async function releaseVm (port, key) {
+  key = parseInt(key, 10);
 
-  const response = await fetch(`http://localhost:${porta}/resource/release`, {
+  const response = await fetch(`http://localhost:${port}/resource/release`, {
     method: 'POST',
-    body: JSON.stringify({ chave }),
+    body: JSON.stringify({ key }),
     headers: { 'Content-Type': 'application/json' }
   });
 
@@ -65,71 +65,71 @@ async function releaseVm (porta, chave) {
 
 (async function start() {
   while (true) {
-    let opc = await getInput(`1 - Mostrar Provedores\n2 - Encontrar Melhor Maquina Virtual\n3 - Requisitar Maquina Virtual\n4 - Liberar Maquina Virtual\n5 - Sair\n`);
+    let opt = await getInput(`1 - Show providers\n2 - Find best virtual machine\n3 - Request best virtual machine\n4 - Release virtual machine\n5 - Exit\n`);
 
-    switch (opc) {
+    switch (opt) {
       case 1:
         try {
           const response = await showProviders();
           const providers = await response.json();
           console.log(inspect(providers, {depth: 999}));
         } catch (e) {
-          console.log('Erro ao requisitar provedores');
+          console.log('Error to request provider');
           console.log(e);
         }
       break;
       case 2:
         try {
-          var cpu = await getInput('Quantidade de CPUs: ');
-          var ram = await getInput('Quantidade de RAM: ');
-          var hd = await getInput('Quantidade de HD: ');
+          var cpu = await getInput('CPUs quantity: ');
+          var ram = await getInput('RAM quantity: ');
+          var hd = await getInput('HD quantity: ');
           const response = await getBestVm(cpu, ram, hd);
           const bestVm = await response.json();
 
-          if (bestVm.chave == -1) {
-            console.log('Não existe nenhuma maquina virtual disponivel que atende aos requistos');
+          if (bestVm.key == -1) {
+            console.log('There is no free virtual machine with this config');
           }
           else {
             console.log(inspect(bestVm, {depth: 999}));
           }
         } catch (e) {
-          console.log('Erro ao requisitar provedores');
+          console.log('Error to get best virtual machine');
           console.log(e);
         }
       break;
       case 3:
         try {
-          var porta = await getInput('Porta do provedor: ');
-          var chave = await getInput('Chave da maquina virtual: ');
+          var port = await getInput('Provider port: ');
+          var key = await getInput('Virtual machine key: ');
 
-          const data = await requestVm(porta, chave);
+          const data = await requestVm(port, key);
           const response = await data.json();
 
           if (response.error) {
             console.log(response.message);
           } else {
-            console.log(`A maquina virtual ${chave} do provedor da porta ${porta} começou a ser usada`);
+            console.log(`The virtual machine ${key} of provider at ${port} start to be use`);
           }
         } catch (e) {
-          console.log('Erro ao utilizar maquina virtual');
+          console.log('Error to use virtual machine');
           console.log(e);
         }
       break;
       case 4:
         try {
-          var porta = await getInput('Porta do provedor: ');
-          var chave = await getInput('Chave da maquina virtual: ');
+          var port = await getInput('Provider port: ');
+          var key = await getInput('Virtual machine key: ');
 
-          const data = await releaseVm(porta, chave);
+          const data = await releaseVm(port, key);
           const response = await data.json();
 
           if (response.error) {
             console.log(response.message);
           } else {
-            console.log(`A maquina virtual ${chave} do provedor da porta ${porta} foi liberada`);
+            console.log(`The virtual machine ${key} of provider at ${port} was released`);
           }
         } catch (e) {
-          console.log('Erro ao liberar maquina virtual');
+          console.log('Error to release virtual machine');
           console.log(e);
         }
       break;
@@ -137,7 +137,7 @@ async function releaseVm (porta, chave) {
         process.exit();
       break;
       default:
-        console.log('Opcao invalida, tente novamente!');
+        console.log('Invalid option, please try again!');
       break;
     }
   }
