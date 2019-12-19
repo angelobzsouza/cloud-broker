@@ -38,7 +38,7 @@ class Provider {
     return response;
   }
 
-  async useVm (chave) {
+  async useVm (key) {
     if (key > this.vms.length - 1) {
       return {
         error: true,
@@ -47,7 +47,7 @@ class Provider {
       }
     }
 
-    if (this.vms[chave].use) {
+    if (this.vms[key].use) {
       return {
         error: true,
         statusCode: 400,
@@ -55,14 +55,14 @@ class Provider {
       }
     }
 
-    this.vms[chave].use = 1;
+    this.vms[key].use = 1;
     await this.publish();
     return {
       error: false
     };
   }
 
-  async releaseVm (chave) {
+  async releaseVm (key) {
     if (key > this.vms.length - 1) {
       return {
         error: true,
@@ -71,7 +71,7 @@ class Provider {
       }
     }
 
-    if (!this.vms[chave].use) {
+    if (!this.vms[key].use) {
       return {
         error: true,
         statusCode: 400,
@@ -79,7 +79,7 @@ class Provider {
       }
     }
 
-    this.vms[chave].use = 0;
+    this.vms[key].use = 0;
     await this.publish();
     return {
       error: false
