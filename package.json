@@ -16,7 +16,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongodb": "^3.4.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "node-json-color-stringify": "^1.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",

@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('node-json-color-stringify');
 const readline = require('readline');
 const fetch = require('node-fetch');
-const { inspect } = require('util');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -72,7 +72,7 @@ async function releaseVm (port, key) {
         try {
           const response = await showProviders();
           const providers = await response.json();
-          console.log(inspect(providers, {depth: 999}));
+          console.log(JSON.colorStringify(providers, null, 2));
         } catch (e) {
           console.log('Error to request provider');
           console.log(e);
@@ -90,7 +90,7 @@ async function releaseVm (port, key) {
             console.log('There is no free virtual machine with this config');
           }
           else {
-            console.log(inspect(bestVm, {depth: 999}));
+            console.log(JSON.colorStringify(bestVm, null, 2));
           }
         } catch (e) {
           console.log('Error to get best virtual machine');
