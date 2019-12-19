@@ -16,61 +16,60 @@ class CloudBroker {
   async getBestResource (cpu, ram, hd) {
     const [mongodb, mongoClient] = await createMongoConnection();
     const collection = mongodb.collection('providers');
-    const aggregation = [
-      {
-        "$unwind": "$vms"
-      },
-      {
-        "$match": {
-          "$nor": [
-            {
-              "vms.uso": 1
-            },
-            {
-              "vms.cpu": {
-                "$lt": cpu
-              }
-            },
-            {
-              "vms.ram": {
-                "$lt": ram
-              }
-            },
-            {
-              "vms.hd": {
-                "$lt": hd
-              }
-            }
-          ]
-        }
-      },
-      {
-        "$project": {
-          "porta": "$porta",
-          "preco": "$vms.preco",
-          "chave": "$vms.chave"
-        }
-      },
-      {
-        "$sort": {
-          "preco": -1
-        }
-      },
-      {
-        "$group": {
-          "_id": "$porta",
-          "menor_preco": {
-            "$last": "$preco"
+
+    const unwind = {
+      "$unwind": "$vms"
+    };
+    const match = {
+      "$match": {
+        "$nor": [
+          {
+            "vms.uso": 1
           },
-          "chave": {
-            "$last": "$chave"
+          {
+            "vms.cpu": {
+              "$lt": parseInt(cpu, 10)
+            }
+          },
+          {
+            "vms.ram": {
+              "$lt": parseInt(ram, 10)
+            }
+          },
+          {
+            "vms.hd": {
+              "$lt": parseInt(hd, 10)
+            }
           }
+        ]
+      }
+    };
+    const project = {
+      "$project": {
+        "porta": "$porta",
+        "preco": "$vms.preco",
+        "chave": "$vms.chave"
+      }
+    };
+    const sort = {
+      "$sort": {
+        "preco": -1
+      }
+    };
+    const group = {
+      "$group": {
+        "_id": "$porta",
+        "menor_preco": {
+          "$last": "$preco"
+        },
+        "chave": {
+          "$last": "$chave"
         }
       }
-    ];
+    };
 
     // Get best vm for each provider
-    const vms = await collection.aggregate(aggregation).toArray();
+    const vms = await collection.aggregate([unwind, match, project, sort, group, ]).toArray();
 
     // Get best vm of all providers
     let bestVm = vms.length > 0 ? vms[0] : false;
