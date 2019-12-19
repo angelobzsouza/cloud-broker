@@ -5,10 +5,11 @@ exports.createMongoConnection = async () => {
   const mongoConnection = new MongoClient(uri, { 
     useUnifiedTopology: true ,
     useNewUrlParser: true,
-    server: { auto_reconnect: true }
+  });
+  mongoConnection.connect((err) => {
+    console.log(err);
   });
   const mongodb = (await mongoConnection.connect()).db();
-  console.log(mongodb);
 
   return [mongodb, mongoConnection]
 };
